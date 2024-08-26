@@ -1,0 +1,19 @@
+---
+- name: Copy config
+  template:
+    src: "{{ vector_template }}"
+    dest: "{{ vector_config_file }}"
+    mode: 0644
+  notify: restart vector
+
+- name: Use the right config_file
+  lineinfile:
+    path: /etc/default/vector
+    line: "VECTOR_CONFIG={{ vector_config_file }}"
+    state: present
+
+- name: Start Vector
+  service:
+    state: started
+    enabled: yes
+    name: vector
