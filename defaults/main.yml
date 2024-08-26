@@ -1,2 +1,2 @@
-vector_template: vector.toml.j2
-vector_config_file: /etc/vector/vector.toml
+vector_template: vector.yaml.j2
+vector_config_file: /etc/vector/vector.yaml
