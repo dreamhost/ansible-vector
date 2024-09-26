@@ -1,4 +1,14 @@
 ---
+- name: Add Vector repo
+  shell: bash -c "$(curl -L https://setup.vector.dev)"
+  args:
+    executable: /bin/bash
+
+- name: Install Vector package
+  apt:
+    name: vector
+    state: present
+    
 - name: Copy config
   template:
     src: "{{ vector_template }}"
