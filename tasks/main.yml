@@ -1,4 +1,13 @@
 ---
+- name: Update APT cache
+  apt:
+    update_cache: yes
+
+- name: Install Vector package from existing repo
+  apt:
+    name: vector
+    state: present
+    
 - name: Copy config
   template:
     src: "{{ vector_template }}"
