@@ -2,9 +2,9 @@
 data_dir = "/var/lib/vector"
 
 {% set loop_helper = {
-    "sources": (sources | default({})),
-    "transforms": (transforms | default({})),
-    "sinks": (sinks | default({}))
+    "sources": (vecotr_sources_config | default({})),
+    "transforms": (vector_transforms_config | default({})),
+    "sinks": (vector_sinks_config | default({}))
 } %}
 
 {% for name, cat in loop_helper.items() | sort(attribute='0') %}
