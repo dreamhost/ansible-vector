@@ -11,7 +11,6 @@ An Ansible role to install and configure [Vector](https://vector.dev/), supporti
   - [Using a Templated Configuration](#using-a-templated-configuration)
   - [Using a Static Configuration File](#using-a-static-configuration-file)
 - [Configuration Structure](#configuration-structure)
-- [Handlers](#handlers)
 
 ## Requirements
 
@@ -24,23 +23,19 @@ An Ansible role to install and configure [Vector](https://vector.dev/), supporti
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
 ```yaml
-# Determines whether to use a template or a static file for configuration.
-# Options: 'template' or 'static'
-vector_config_type: 'template'
-
-# Source template file for Vector configuration (used when vector_config_type is 'template')
+# Source template file for Vector configuration
 vector_template: 'vector.yaml.j2'
 
-# Source static configuration file (used when vector_config_type is 'static')
+# Source static configuration file (overrides template if defined)
 vector_static_config_file: ''
 
 # Destination path for the Vector configuration file
 vector_config_file: '/etc/vector/vector.yaml'
 
-# General configuration settings for Vector
+# General configuration settings for Vector (template config only)
 vector_general_config: ''
 
-# Configuration for sources, transforms, and sinks
+# Configuration for sources, transforms, and sinks (template config only)
 vector_sources_config: {}
 vector_transforms_config: {}
 vector_sinks_config: {}
@@ -96,16 +91,14 @@ sinks:
 ```
 
 ## Using a Static Configuration File
-To use a static configuration file, set vector_config_type to 'static' and specify the path to your static config file.
+To use a static configuration file, specify the path to your static config file.
 
 ```yaml
 - hosts: all
   roles:
-    - role: your_vector_role
+    - role: ansible-vector
       vars:
-        vector_config_type: 'static'
         vector_static_config_file: 'files/vector_static.yaml'
-        vector_config_file: '/etc/vector/vector.yaml'
 ```
 Place your static config file (vector_static.yaml) in the files directory of the role or provide an absolute path.
 
@@ -137,16 +130,6 @@ vector_sinks_config:
       - my_transform
     encoding:
       codec: json
-```
-
-## Handlers
-The role includes a handler to restart the Vector service when the configuration changes:
-
-```yaml
-- name: restart vector
-  service:
-    name: vector
-    state: restarted
 ```
 
 Author Information
