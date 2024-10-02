@@ -9,20 +9,36 @@
     name: vector
     state: present
 
-- name: Copy Vector config from template
-  template:
-    src: "{{ vector_template }}"
-    dest: "{{ vector_config_file }}"
-    mode: 0644
-  when: vector_config_type == 'template'
-  notify: restart vector
+- name: Check if vector_static_config_file exists
+  stat:
+    path: "{{ vector_static_config_file }}"
+  register: vector_static_file
+  when: vector_static_config_file != ''
 
+  - name: Fail if vector_static_config_file is set but does not exist
+  fail:
+    msg: "The static config file {{ vector_static_config_file }} does not exist."
+  when:
+    - vector_static_config_file != ''
+    - not vector_static_file.stat.exists
+
+# Use static config file if provided
 - name: Copy Vector static config file
   copy:
     src: "{{ vector_static_config_file }}"
     dest: "{{ vector_config_file }}"
     mode: 0644
-  when: vector_config_type == 'static'
+  when: vector_static_config_file != ''
+  notify: restart vector
+
+# Use template if static config file is not provided
+- name: Copy Vector config from template
+  template:
+    src: "{{ vector_template }}"
+    dest: "{{ vector_config_file }}"
+    mode: 0644
+  when: vector_static_config_file == ''
+  notify: restart vector
   notify: restart vector
 
 - name: Ensure VECTOR_CONFIG is set in /etc/default/vector
