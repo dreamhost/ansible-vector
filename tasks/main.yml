@@ -1,4 +1,5 @@
 ---
+
 - name: Update APT cache
   apt:
     update_cache: yes
@@ -7,22 +8,31 @@
   apt:
     name: vector
     state: present
-    
-- name: Copy config
+
+- name: Copy Vector config from template
   template:
     src: "{{ vector_template }}"
     dest: "{{ vector_config_file }}"
     mode: 0644
+  when: vector_config_type == 'template'
   notify: restart vector
 
-- name: Use the right config_file
+- name: Copy Vector static config file
+  copy:
+    src: "{{ vector_static_config_file }}"
+    dest: "{{ vector_config_file }}"
+    mode: 0644
+  when: vector_config_type == 'static'
+  notify: restart vector
+
+- name: Ensure VECTOR_CONFIG is set in /etc/default/vector
   lineinfile:
     path: /etc/default/vector
     line: "VECTOR_CONFIG={{ vector_config_file }}"
     state: present
 
-- name: Start Vector
+- name: Start and enable Vector service
   service:
+    name: vector
     state: started
     enabled: yes
-    name: vector
