@@ -32,7 +32,7 @@
   notify: restart vector
 
 # Use template if static config file is not provided
-- name: Copy Vector config from template
+- name: Copy Vector config from template (static file not set)
   template:
     src: "{{ vector_template }}"
     dest: "{{ vector_config_file }}"
