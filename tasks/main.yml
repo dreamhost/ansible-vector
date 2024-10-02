@@ -15,7 +15,7 @@
   register: vector_static_file
   when: vector_static_config_file != ''
 
-  - name: Fail if vector_static_config_file is set but does not exist
+- name: Fail if vector_static_config_file is set but does not exist
   fail:
     msg: "The static config file {{ vector_static_config_file }} does not exist."
   when:
