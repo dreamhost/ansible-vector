@@ -1,2 +1,4 @@
+vector_config_type: 'template'  # Options: 'template' or 'static'
+vector_static_config_file: ''  # Set this when using a static config
 vector_template: vector.yaml.j2
 vector_config_file: /etc/vector/vector.yaml
