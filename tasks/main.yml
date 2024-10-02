@@ -1,4 +1,5 @@
 ---
+
 - name: Update APT cache
   apt:
     update_cache: yes
@@ -7,22 +8,47 @@
   apt:
     name: vector
     state: present
-    
-- name: Copy config
+
+- name: Check if vector_static_config_file exists
+  stat:
+    path: "{{ vector_static_config_file }}"
+  register: vector_static_file
+  when: vector_static_config_file != ''
+
+  - name: Fail if vector_static_config_file is set but does not exist
+  fail:
+    msg: "The static config file {{ vector_static_config_file }} does not exist."
+  when:
+    - vector_static_config_file != ''
+    - not vector_static_file.stat.exists
+
+# Use static config file if provided
+- name: Copy Vector static config file
+  copy:
+    src: "{{ vector_static_config_file }}"
+    dest: "{{ vector_config_file }}"
+    mode: 0644
+  when: vector_static_config_file != ''
+  notify: restart vector
+
+# Use template if static config file is not provided
+- name: Copy Vector config from template (static file not set)
   template:
     src: "{{ vector_template }}"
     dest: "{{ vector_config_file }}"
     mode: 0644
+  when: vector_static_config_file == ''
+  notify: restart vector
   notify: restart vector
 
-- name: Use the right config_file
+- name: Ensure VECTOR_CONFIG is set in /etc/default/vector
   lineinfile:
     path: /etc/default/vector
     line: "VECTOR_CONFIG={{ vector_config_file }}"
     state: present
 
-- name: Start Vector
+- name: Start and enable Vector service
   service:
+    name: vector
     state: started
     enabled: yes
-    name: vector

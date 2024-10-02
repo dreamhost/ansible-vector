@@ -1,2 +1,3 @@
+vector_static_config_file: ''  # Set this to an ansible repo path when using a static config
 vector_template: vector.yaml.j2
 vector_config_file: /etc/vector/vector.yaml
