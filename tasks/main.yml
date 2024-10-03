@@ -14,6 +14,7 @@
     path: "{{ vector_static_config_file }}"
   register: vector_static_file
   when: vector_static_config_file != ''
+  delegate_to: localhost
 
 - name: Fail if vector_static_config_file is set but does not exist
   fail:
