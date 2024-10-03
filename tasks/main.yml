@@ -15,6 +15,7 @@
   register: vector_static_file
   when: vector_static_config_file != ''
   delegate_to: localhost
+  become: false
 
 - name: Fail if vector_static_config_file is set but does not exist
   fail:
