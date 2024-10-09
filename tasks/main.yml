@@ -49,6 +49,13 @@
     line: "VECTOR_CONFIG={{ vector_config_file }}"
     state: present
 
+- name: Ensure /var/lib/vector/ is owned by vector user and group
+  file:
+    path: /var/lib/vector/
+    owner: vector
+    group: vector
+    recurse: no
+
 - name: Start and enable Vector service
   service:
     name: vector
